@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.ipynb_checkpoints/
+
+# Project artifacts
+checkpoints/
+checkpoints_*/
+checkpoints_pretraining/
+checkpoints_finetuning/
+*.pth
+predicted_results.csv
+synthetic_dataset_cropped_aligned/
+
+# IDE/Editor
+.vscode/
+.idea/
+.git_history_backup_*

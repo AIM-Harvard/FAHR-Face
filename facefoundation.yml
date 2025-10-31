@@ -1,0 +1,46 @@
+name: facefoundation
+channels:
+  - conda-forge          # single channel = predictable builds
+dependencies:
+  # ---- core runtime ----
+  - python=3.8           
+  - pip
+  - numpy                # let the solver choose the newest 1.x
+  - pandas
+  - scipy
+  - h5py
+  - scikit-learn
+  - opencv               # pulls the headless build on CF
+  - pillow
+  - tqdm
+  - tokenizers
+  - transformers         
+  - typing-extensions
+  - ca-certificates
+  - certifi
+
+  # ---- pip-only packages ----
+  - pip:
+      # DL frameworks (binary wheels include their own CUDA 12 libs)
+      - torch==2.1.2
+      - torchvision==0.16.2
+      - triton==2.1.0
+
+      # face / HF helpers
+      - retina-face==0.0.17
+      - huggingface-hub==0.22.2
+      - safetensors==0.4.3
+
+      # NVIDIA runtime libraries (match CUDA 12.1)
+      - nvidia-cuda-runtime-cu12==12.1.105
+      - nvidia-cudnn-cu12==8.9.2.26
+      - nvidia-nccl-cu12==2.18.1
+
+      # misc utilities
+      - fsspec==2024.3.1
+      - jinja2==3.1.3
+      - mpmath==1.3.0
+      - networkx==3.1
+      - packaging==24.0
+      - pyyaml==6.0.1
+      - sympy==1.12
