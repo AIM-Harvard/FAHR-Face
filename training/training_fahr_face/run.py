@@ -1,12 +1,11 @@
 import os
 import math
 import torch
-import torch.multiprocessing as mp
 import torch.nn.functional as F
 from PIL import Image
 from transformers import ViTMAEForPreTraining, ViTMAEConfig, ViTImageProcessor
 import numpy as np
-from queue import Empty
+from torch.utils.data import DataLoader
 
 
 class WebFaceDataset(torch.utils.data.Dataset):
@@ -44,40 +43,28 @@ def resize_pos_embed(posemb, new_num_patches):
     return torch.cat([cls_token_emb, posemb_grid], dim=1)
 
 
-def data_loader_worker(data_queue, dataset, batch_size):
-    num_data = len(dataset)
-    indices = list(range(num_data))
-    np.random.shuffle(indices)
 
-    for i in range(0, num_data, batch_size):
-        batch_indices = indices[i:i + batch_size]
-        batch = [dataset[j] for j in batch_indices]
-        data_queue.put(batch)
-    data_queue.put(None)
+def train(model, dataloader, device, optimizer, epoch):
+    total_loss = 0.0
+    batch_count = 0
+    for batch_index, batch in enumerate(dataloader):
+        batch = batch.to(device)
+        optimizer.zero_grad()
+        outputs = model(pixel_values=batch)
+        loss = outputs.loss
+        total_loss += loss.item()
+        batch_count += 1
+        loss.backward()
+        optimizer.step()
 
+        if (batch_index + 1) % 10000 == 0:
+            print(f"Epoch: {epoch}, Batch: {batch_index + 1}, Current Batch Loss: {loss.item():.5f}")
 
-def train(model, data_queue, device, optimizer):
-    total_loss = 0
-    while True:
-        try:
-            batch = data_queue.get(timeout=3)
-            if batch is None:
-                break
-
-            batch = torch.stack([item for item in batch]).to(device)
-            optimizer.zero_grad()
-            outputs = model(pixel_values=batch)
-            loss = outputs.loss
-            total_loss += loss.item()
-            loss.backward()
-            optimizer.step()
-        except Empty:
-            continue
-    return total_loss
+    return total_loss, batch_count
 
 
 if __name__ == "__main__":
-    # Initialize model
+    # Initialize model 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     original_model = ViTMAEForPreTraining.from_pretrained("facebook/vit-mae-base")
     original_state_dict = original_model.state_dict()
@@ -94,28 +81,28 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.AdamW(new_model.parameters(), lr=1.5e-5, weight_decay=0.05, betas=(0.9, 0.9999))
 
-    # Initialize dataset
+    # Initialize dataset and DataLoader
     image_processor = ViTImageProcessor.from_pretrained("facebook/vit-mae-base", size=112, do_resize=False,
                                                         do_normalize=True)
     dataset = WebFaceDataset("/path/to/WebFace260M", image_processor)
-
-    # Set up multiprocessing
-    mp.set_start_method('spawn')
-    data_queue = mp.Queue(maxsize=10)
-    data_process = mp.Process(target=data_loader_worker, args=(data_queue, dataset, 1024))
-    data_process.start()
+    dataloader = DataLoader(dataset, batch_size=1024, shuffle=True, num_workers=32, pin_memory=True)
 
     # Training loop
-    for epoch in range(100):
-        epoch_loss = train(new_model, data_queue, device, optimizer)
-        print(f"Epoch {epoch + 1}, Loss: {epoch_loss}")
-
-    data_process.join()
-
-    # Save model checkpoint, etc.
     checkpoint_dir = "checkpoints"
     os.makedirs(checkpoint_dir, exist_ok=True)
-    checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch + 1}.pth')
-    torch.save(
-        {'epoch': epoch, 'model_state_dict': new_model.state_dict(), 'optimizer_state_dict': optimizer.state_dict(),
-         'loss': epoch_loss}, checkpoint_path)
+    
+    print("Starting Training")
+    for epoch in range(100):
+        total_loss, batch_count = train(new_model, dataloader, device, optimizer, epoch + 1)
+        avg_loss = total_loss / batch_count
+        print(f"Epoch: {epoch + 1}, Average Loss: {avg_loss:.5f}")
+
+        checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch + 1}.pth')
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': new_model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': avg_loss
+        }, checkpoint_path)
+
+    print("Training Complete!")
