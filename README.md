@@ -8,7 +8,7 @@ This repository contains the implementation of the FAHR (Foundation Artificial I
 2. **FAHR-FaceAge** - Age estimation model built on top of the foundation model
 3. **FAHR-FaceSurvival** - Survival analysis model for health risk prediction
 
-**Released weights: FAHR-Face and FAHR-FaceAge only.** Both are publicly available on [Hugging Face](https://huggingface.co/fridolin22/FAHR-Face); FAHR-FaceSurvival weights are not released.
+**Released weights: FAHR-Face and FAHR-FaceAge only.** Both are publicly available on [Hugging Face](https://huggingface.co/fridolin22/FAHR-Face); FAHR-FaceSurvival weights are not publicly released.
 
 **FAHR-FaceAge requires cropped and aligned face images before inference.** See [Face Preprocessing](#face-preprocessing).
 
@@ -178,7 +178,7 @@ Using the [Hugging Face CLI](https://huggingface.co/docs/huggingface_hub/guides/
 hf download fridolin22/FAHR-Face fahr_face.pth fahr_faceage.pth --local-dir checkpoints
 ```
 
-These are original training checkpoints containing `model_state_dict` and optimizer state. Loading examples are available in the [model card](https://huggingface.co/fridolin22/FAHR-Face). FAHR-FaceAge inference needs only the age checkpoint. FAHR-FaceSurvival weights are not included in this release.
+These are original training checkpoints containing `model_state_dict` and optimizer state. Loading examples are available in the [model card](https://huggingface.co/fridolin22/FAHR-Face). FAHR-FaceAge inference needs only the age checkpoint. FAHR-FaceSurvival weights are not publicly released.
 
 ## Test Images
 

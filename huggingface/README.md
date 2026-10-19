@@ -21,7 +21,7 @@ Checkpoints for FAHR-Face and FAHR-FaceAge, accompanying our *Lancet Digital Hea
 
 FAHR-Face is a ViT masked autoencoder pretrained on more than 40 million WebFace42M photographs. FAHR-FaceAge was fine-tuned on 743,152 photographs from ten public datasets and achieved a mean absolute error of 5.1 years on APPA-REAL (6,783 photographs). See the paper for methods and clinical evaluation.
 
-FAHR-FaceSurvival weights are not included. Both released files are PyTorch checkpoints containing `model_state_dict` and optimizer state.
+FAHR-FaceSurvival weights are not publicly released. Both released files are PyTorch checkpoints containing `model_state_dict` and optimizer state.
 
 ## Prepare images first
 
