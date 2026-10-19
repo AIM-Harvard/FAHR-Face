@@ -52,12 +52,6 @@ Key features:
 - The encoder processes the visible patches, and a learnable mask token is added at the positions of the masked patches
 - The decoder reconstructs the raw pixel values for the masked positions based on the encoded visible patches
 
-Several adjustments were made to adapt the "facebook/vit-mae-base" model for this use case:
-
-- Image size reduced to 112x112 pixels to match the face photograph dataset
-- Positional embeddings were resized for both the encoder and decoder
-- Trained with a learning rate of 1.5e-5 and AdamW optimizer with a weight decay of 0.05
-
 ### FAHR-FaceAge (Age Estimation Model)
 
 The age estimation model builds upon the foundation model to predict chronological age from facial images:
@@ -65,7 +59,6 @@ The age estimation model builds upon the foundation model to predict chronologic
 - Uses transfer learning from the pre-trained FAHR-Face model
 - Two-stage fine-tuning on 743,152 age-labeled photographs from ten public datasets: first eight oversampled datasets (IMDB-WIKI, KANFace, FG-NET, CACD, AFAD, MegaAge, MORPH, LAGENDA), then age-balanced fine-tuning on UTK and AgeDB
 - Trained with L1 loss (Mean Absolute Error) to predict age as a continuous value
-- Uses data augmentation techniques during training
 
 ### FAHR-FaceSurvival (Survival Analysis Model)
 
@@ -74,7 +67,6 @@ The survival analysis model is designed to predict health risks from facial imag
 - Built on top of the FAHR-Face foundation model
 - Trained using a ranking loss function optimized for survival analysis
 - Evaluated using the concordance index (C-index) metric, which is only used for validation and not for training loss
-- Incorporates smoothed regularization to improve model stability
 
 ## Usage
 
