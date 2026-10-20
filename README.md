@@ -82,7 +82,7 @@ Use the resulting face crops as input. The age inference example converts them t
 
 ### Running Inference
 
-For **standalone age inference with the released checkpoint**, use the [Hugging Face example](https://huggingface.co/fridolin22/FAHR-Face#fahr-faceage-inference), also maintained in [huggingface/README.md](huggingface/README.md#fahr-faceage-inference). It requires only `fahr_faceage.pth`.
+For **standalone age inference with the released checkpoint**, use the [Hugging Face example](https://huggingface.co/fridolin22/FAHR-Face#fahr-faceage-inference). It requires only `fahr_faceage.pth`.
 
 The existing `run.py` combines age and survival inference. It also requires `checkpoints/fahr_facesurvival.pth`, which is not distributed. If you already have access to that checkpoint:
 
@@ -146,7 +146,7 @@ Clinical evaluation used the Harvard-RT cohort (38,183 patients) and independent
 
 ## Environment Setup
 
-The original training and face-preprocessing environment uses Python 3.8 and Miniforge (a free and open-source conda distribution that uses conda-forge as the default channel). For standalone age inference, the [model card](huggingface/README.md#setup) also provides a tested Python 3.11 setup. To create the original environment:
+The original training and face-preprocessing environment uses Python 3.8 and Miniforge (a free and open-source conda distribution that uses conda-forge as the default channel). For standalone age inference, the [model card](https://huggingface.co/fridolin22/FAHR-Face#setup) also provides a tested Python 3.11 setup. To create the original environment:
 
 1. Install Miniforge if you don't have it already:
    - Download from: https://github.com/conda-forge/miniforge
